@@ -177,15 +177,22 @@ def complete_task(task_id):
         return error("Task not found", 404)
     if not has_access(task):
         return error("Forbidden", 403)
-    if task["status"] == "completed":
+
+    result = (
+        supabase.table("tasks")
+        .update(
+            {
+                "status": "completed",
+                "completed_at": datetime.now(timezone.utc).isoformat(),
+            }
+        )
+        .eq("id", task_id)
+        .neq("status", "completed")
+        .execute()
+    )
+    if not result.data:
         return error("Task is already completed", 409)
 
-    supabase.table("tasks").update(
-        {
-            "status": "completed",
-            "completed_at": datetime.now(timezone.utc).isoformat(),
-        }
-    ).eq("id", task_id).execute()
     return jsonify(fetch_task(task_id))
 
 
