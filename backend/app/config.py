@@ -15,3 +15,5 @@ class Config:
     BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:5000")
     COOKIE_SECURE = os.environ.get("COOKIE_SECURE", "false").lower() == "true"
     COOKIE_SAMESITE = os.environ.get("COOKIE_SAMESITE", "Lax")
+    GMAIL_SENDER_EMAIL = os.environ.get("GMAIL_SENDER_EMAIL")
+    GMAIL_REFRESH_TOKEN = os.environ.get("GMAIL_REFRESH_TOKEN")
