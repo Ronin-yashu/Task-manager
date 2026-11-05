@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from flask import Blueprint, request, g, jsonify
 from ..db import supabase
 from ..utils import login_required
+from ..email_service import notify_task_created, notify_task_completed
 
 bp = Blueprint("tasks", __name__, url_prefix="/tasks")
 
@@ -80,6 +81,7 @@ def create_task():
     }
     inserted = supabase.table("tasks").insert(row).execute()
     task = fetch_task(inserted.data[0]["id"])
+    notify_task_created(task, g.user)
     return jsonify(task), 201
 
 
@@ -193,7 +195,9 @@ def complete_task(task_id):
     if not result.data:
         return error("Task is already completed", 409)
 
-    return jsonify(fetch_task(task_id))
+    completed = fetch_task(task_id)
+    notify_task_completed(completed, g.user)
+    return jsonify(completed)
 
 
 @bp.delete("/<task_id>")
