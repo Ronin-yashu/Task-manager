@@ -13,7 +13,7 @@ COOKIE_MAX_AGE = 7 * 24 * 60 * 60
 
 @bp.get("/google/login")
 def google_login():
-    redirect_uri = f"{Config.BACKEND_URL}/auth/google/callback"
+    redirect_uri = f"{Config.FRONTEND_URL}/api/auth/google/callback"
     return oauth.google.authorize_redirect(redirect_uri)
 
 
